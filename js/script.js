@@ -11,44 +11,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES GLOBAIS (para todas as páginas) ---
 
-// Função para comunicar o tema ao Giscus
-const setGiscusTheme = (theme) => {
-    const iframe = document.querySelector('iframe.giscus-frame');
-    if (iframe) {
-        iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
+    // Função para enviar mensagem de tema para o iframe do Giscus
+    const updateGiscusTheme = () => {
+        const theme = body.classList.contains('light') ? 'light' : 'github_dark';
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
+        }
     }
-};
 
-// Modifique a função toggleTheme
-const toggleTheme = () => {
-    body.classList.toggle('light');
-    const isLight = body.classList.contains('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    
-    // Adicione esta linha para trocar o tema do Giscus
-    const giscusTheme = isLight ? 'light' : 'github_dark';
-    setGiscusTheme(giscusTheme);
-};
+    // Altere sua função toggleTheme
+    const toggleTheme = () => {
+        body.classList.toggle('light');
+        localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+        updateGiscusTheme(); // Chama a função para atualizar o Giscus
+    };
 
-// Modifique a função applySavedTheme
-const applySavedTheme = () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        body.classList.add('light');
-    }
+    // Altere sua função applySavedTheme
+    const applySavedTheme = () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light');
+        }
+        // Não precisa fazer nada aqui ainda, porque o iframe não existe.
+        // O Giscus vai carregar com o tema padrão que definimos no HTML.
+    };
     
-    // Adicione estas linhas para carregar o Giscus com o tema correto
-    const giscusTheme = savedTheme === 'light' ? 'light' : 'github_dark';
-    // Precisamos esperar o Giscus carregar para enviar a mensagem
-    const giscusScript = document.querySelector('script[src*="giscus.app"]');
-    if (giscusScript) {
-        // Uma forma simples de garantir que a mensagem seja enviada após o carregamento
-        // é ouvir o evento de 'load' no script, mas para simplificar,
-        // vamos apenas garantir que a mensagem seja enviada na troca e no carregamento.
-        // O Giscus é inteligente e já pode usar o tema do sistema, mas isso força a barra.
-        giscusScript.setAttribute('data-theme', giscusTheme);
-    }
-};
+    // ... (resto do seu código)
+    
+    // Na sua função initPostPage, vamos garantir que o Giscus receba o tema correto
+    // após ser carregado.
+    const initPostPage = () => {
+        // ... (código que carrega o post)
+        
+        // Adicione isso ao final da função
+        // Espera um pouco para o Giscus carregar e então envia o tema correto
+        setTimeout(updateGiscusTheme, 2000); 
+    };
+    
     // Lógica do Preloader
     window.addEventListener('load', () => {
         preloader.classList.add('hidden');
@@ -250,3 +250,4 @@ const applySavedTheme = () => {
     }
 
 });
+
