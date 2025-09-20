@@ -23,9 +23,10 @@
 
     <main class="container page-content">
         <h1 class="page-title">Entre em Contato</h1>
-        <p class="page-description">Tem alguma pergunta, sugestão ou proposta? Preencha o formulário abaixo!</p>
+        <p class="page-description">Tem alguma pergunta, sugestão ou proposta? Preencha o formulário abaixo e retornarei o mais breve possível!</p>
         
-        <form id="contactForm" class="contact-form">
+        <!-- FORMULÁRIO ATUALIZADO -->
+        <form id="contactForm" class="contact-form" action="https://formspree.io/f/xpwjvyzl" method="POST">
             <div class="form-group">
                 <label for="name">Nome</label>
                 <input type="text" id="name" name="name" required>
@@ -38,7 +39,10 @@
                 <label for="message">Mensagem</label>
                 <textarea id="message" name="message" rows="6" required></textarea>
             </div>
-            <button type="submit" class="submit-btn">Enviar Mensagem</button>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">Enviar Mensagem</span>
+                <span class="btn-spinner"></span>
+            </button>
         </form>
     </main>
 
@@ -55,3 +59,4 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+
