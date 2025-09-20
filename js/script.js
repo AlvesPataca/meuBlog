@@ -11,60 +11,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES GLOBAIS (para todas as páginas) ---
 
-    // Função para enviar mensagem de tema para o iframe do Giscus
-    const updateGiscusTheme = () => {
-        const theme = body.classList.contains('light') ? 'light' : 'github_dark';
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
-        }
-    }
-
-    // Altere sua função toggleTheme
-    const toggleTheme = () => {
-        body.classList.toggle('light');
-        localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
-        updateGiscusTheme(); // Chama a função para atualizar o Giscus
-    };
-
-    // Altere sua função applySavedTheme
-    const applySavedTheme = () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            body.classList.add('light');
-        }
-        // Não precisa fazer nada aqui ainda, porque o iframe não existe.
-        // O Giscus vai carregar com o tema padrão que definimos no HTML.
-    };
-    
-    // ... (resto do seu código)
-    
-    // Na sua função initPostPage, vamos garantir que o Giscus receba o tema correto
-    // após ser carregado.
-    const initPostPage = () => {
-        // ... (código que carrega o post)
-        
-        // Adicione isso ao final da função
-        // Espera um pouco para o Giscus carregar e então envia o tema correto
-        setTimeout(updateGiscusTheme, 2000); 
-    };
-    
     // Lógica do Preloader
     window.addEventListener('load', () => {
         preloader.classList.add('hidden');
     });
+    
+    // Função para comunicar o tema ao Giscus
+    const updateGiscusTheme = () => {
+        const theme = body.classList.contains('light') ? 'light' : 'dark';
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
+        }
+    };
 
     // Alternar tema e salvar preferência
     const toggleTheme = () => {
         body.classList.toggle('light');
         localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+        updateGiscusTheme(); // Atualiza o tema do Giscus na troca
     };
 
     // Aplicar tema salvo
     const applySavedTheme = () => {
-        if (localStorage.getItem('theme') === 'light') {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
             body.classList.add('light');
         }
+        // O tema do Giscus será definido no HTML e atualizado depois via JS
     };
 
     // Header que encolhe e botão "Voltar ao Topo"
@@ -127,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.href = `post.html?id=${post.id}`;
                     card.className = 'card';
                     card.innerHTML = `
-                        <img src="${post.imageUrl}" alt="${post.title}">
+                        <img src="${post.imageUrl}" alt="${post.title}" loading="lazy">
                         <div class="card-content">
                             <div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
                             <h2>${post.title}</h2>
@@ -138,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             
-            // Gerencia a visibilidade do botão "Carregar Mais"
             loadMoreBtn.style.display = (visiblePostsCount >= filteredPosts.length) ? 'none' : 'block';
         };
 
@@ -148,21 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                       allTags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
         };
         
-        // Event Listeners da Página Inicial
         searchInput.addEventListener('input', (e) => {
             currentFilter.term = e.target.value;
-            visiblePostsCount = 6; // Reseta a contagem
+            visiblePostsCount = 6;
             renderPosts();
         });
 
         tagsContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('tag')) {
-                // Atualiza o visual da tag ativa
                 tagsContainer.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
                 e.target.classList.add('active');
                 
                 currentFilter.tag = e.target.dataset.tag;
-                visiblePostsCount = 6; // Reseta a contagem
+                visiblePostsCount = 6;
                 renderPosts();
             }
         });
@@ -172,25 +143,26 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPosts();
         });
         
-        // Inicia a renderização
         renderTags();
-        tagsContainer.querySelector('.tag').classList.add('active'); // Ativa o botão "Todos"
+        tagsContainer.querySelector('.tag').classList.add('active');
         renderPosts();
     };
     
     // Lógica da PÁGINA DE POST (post.html)
     const initPostPage = () => {
-        const postContainer = document.getElementById('post-container');
+        const articleContent = document.getElementById('article-content'); // **LINHA ATUALIZADA**
+        if (!articleContent) return;
+
         const params = new URLSearchParams(window.location.search);
         const postId = parseInt(params.get('id'));
         const post = postsData.find(p => p.id === postId);
 
         if (post) {
             document.title = `${post.title} - Meu Blog Hardcore`;
-            postContainer.innerHTML = `
+            articleContent.innerHTML = `
                 <article class="post-full">
                     <header class="post-header">
-                        <img src="${post.imageUrl}" alt="${post.title}" class="post-image-full">
+                        <img src="${post.imageUrl}" alt="${post.title}" class="post-image-full" loading="lazy">
                         <h1 class="post-title-full">${post.title}</h1>
                         <div class="post-meta">
                             <span>Por ${post.author}</span> | 
@@ -213,29 +185,31 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
-            postContainer.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está procurando não foi encontrado.</p>';
+            articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está procurando não foi encontrado.</p>';
         }
+
+        // Garante que o Giscus receba o tema correto após carregar
+        setTimeout(updateGiscusTheme, 1500);
     };
     
     // Lógica da PÁGINA DE CONTATO (contato.html)
     const initContactPage = () => {
         const contactForm = document.getElementById('contactForm');
+        if (!contactForm) return;
+
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value;
-            // Simula o envio
             showToast(`Obrigado, ${name}! Sua mensagem foi enviada.`);
             contactForm.reset();
         });
     };
 
-
     // --- INICIALIZAÇÃO GERAL ---
     applySavedTheme();
     highlightActiveLink();
-    handleScroll(); // Executa uma vez no carregamento
+    handleScroll();
     
-    // Event Listeners Globais
     toggleThemeBtn.addEventListener('click', toggleTheme);
     window.addEventListener('scroll', handleScroll);
     backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
@@ -243,11 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Roda o código específico da página atual
     if (document.getElementById('postContainer')) {
         initHomePage();
-    } else if (document.getElementById('post-container')) {
+    } else if (document.getElementById('article-content')) {
         initPostPage();
     } else if (document.getElementById('contactForm')) {
         initContactPage();
     }
-
 });
-
