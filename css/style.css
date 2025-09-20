@@ -123,7 +123,7 @@ nav.scrolled {
     cursor: pointer;
     z-index: 1001;
     padding: 0;
-    position: relative; /* Adicionado para posicionamento dos spans */
+    position: relative;
 }
 .hamburger-btn span {
     display: block;
@@ -132,7 +132,7 @@ nav.scrolled {
     background-color: var(--text-dark);
     border-radius: 3px;
     transition: all 0.3s ease-in-out;
-    position: absolute; /* Adicionado para animação */
+    position: absolute;
     left: 0;
 }
 .hamburger-btn span:nth-child(1) { top: 0; }
@@ -351,7 +351,7 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
     background-color: var(--secondary);
 }
 #toggleTheme { right: 20px; }
-#backToTopBtn {
+#backTotopBtn {
     right: 90px;
     opacity: 0;
     pointer-events: none;
