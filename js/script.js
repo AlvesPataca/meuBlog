@@ -44,24 +44,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
 
-    const updateGiscusTheme = () => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-            const theme = body.classList.contains('light') ? 'light' : 'dark';
-            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
-        }
-    };
-
+    // Função para CARREGAR o Giscus com o tema correto
     const loadGiscus = () => {
         const container = document.getElementById('giscus-container');
-        if (!container) return;
+        if (!container) return; // Se não estiver na página de post, não faz nada
 
+        // Remove qualquer instância antiga para evitar duplicatas
         container.innerHTML = '';
+
         const script = document.createElement('script');
         script.src = 'https://giscus.app/client.js';
         script.async = true;
         script.crossOrigin = 'anonymous';
 
+        // Define todos os atributos necessários para o Giscus
         script.setAttribute('data-repo', 'AlvesPataca/meuBlog');
         script.setAttribute('data-repo-id', 'R_kgDOPzTnBQ');
         script.setAttribute('data-category', 'General');
@@ -72,16 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
         script.setAttribute('data-input-position', 'bottom');
         script.setAttribute('data-lang', 'pt');
         
+        // Define o tema com base na classe do body ANTES de carregar o script
         const currentTheme = body.classList.contains('light') ? 'light' : 'dark';
         script.setAttribute('data-theme', currentTheme);
 
         container.appendChild(script);
     };
     
+    // Função toggleTheme agora recarrega o Giscus
     const toggleTheme = () => {
         body.classList.toggle('light');
         localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
-        updateGiscusTheme();
+        // Em vez de enviar uma mensagem, simplesmente recarregamos o Giscus.
+        // Isso é mais garantido.
+        loadGiscus();
     };
 
     const applySavedTheme = () => {
@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está a procurar não foi encontrado.</p>';
         }
 
+        // Carrega o Giscus com o tema correto na primeira vez
         loadGiscus();
         hidePreloader();
     };
