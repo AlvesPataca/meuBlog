@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('a');
                     card.href = `post.html?id=${post.id}`;
                     card.className = 'card';
-                    // CORRIGIDO AQUI: toLocaleDateString em vez de toLocaleDateDateString
                     card.innerHTML = `<img src="${post.imageUrl}" alt="${post.title}" loading="lazy"><div class="card-content"><div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><h2>${post.title}</h2><p>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p></div>`;
                     postContainer.appendChild(card);
                 });
@@ -131,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const post = postsData.find(p => p.id === postId);
         if (post) {
             document.title = `${post.title} - Meu Blog Hardcore`;
-            // CORRIGIDO AQUI: toLocaleDateString em vez de toLocaleDateDateString
             articleContent.innerHTML = `<article class="post-full"><header class="post-header"><img src="${post.imageUrl}" alt="${post.title}" class="post-image-full" loading="lazy"><h1 class="post-title-full">${post.title}</h1><div class="post-meta"><span>Por ${post.author}</span> | <span>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</span></div><div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></header><section class="post-content-full">${post.content}</section><footer class="post-footer"><h3>Compartilhe este post:</h3><div class="share-buttons"><a href="https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' - ' + window.location.href)}" target="_blank" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}" target="_blank" class="share-btn twitter"><i class="fab fa-twitter"></i> Twitter</a><a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}" target="_blank" class="share-btn linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a></div></footer></article>`;
         } else {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
@@ -146,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const initContactPage = () => {
         const contactForm = document.getElementById('contactForm');
-        if (!contactForm) return.
+        // CORRIGIDO AQUI: Ponto e vírgula em vez de ponto final.
+        if (!contactForm) return;
         
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
