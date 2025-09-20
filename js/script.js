@@ -11,28 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES GLOBAIS (para todas as páginas) ---
 
-    // Lógica do Preloader (MODIFICADA)
-    // Agora o preloader é escondido manualmente após o conteúdo ser renderizado
     const hidePreloader = () => {
         if (preloader) {
             preloader.classList.add('hidden');
         }
     };
-    
-    // Função para comunicar o tema ao Giscus
-    const updateGiscusTheme = () => {
-        const theme = body.classList.contains('light') ? 'light' : 'dark';
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
-        }
-    };
 
-    // Alternar tema e salvar preferência
+    // Alternar tema e salvar preferência (SIMPLIFICADO)
     const toggleTheme = () => {
         body.classList.toggle('light');
         localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
-        updateGiscusTheme(); // Atualiza o tema do Giscus na troca
     };
 
     // Aplicar tema salvo
@@ -65,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // Função de Notificação Toast
-    const showToast = (message, type = 'success') => {
+    const showToast = (message, type = 'success')
+     => {
         toast.textContent = message;
         toast.className = `toast visible ${type}`;
         setTimeout(() => {
@@ -75,28 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA ESPECÍFICA DE CADA PÁGINA ---
 
-    // Lógica da PÁGINA INICIAL (index.html)
     const initHomePage = () => {
         const postContainer = document.getElementById('postContainer');
+        if (!postContainer) return;
+
         const searchInput = document.getElementById('searchInput');
         const tagsContainer = document.getElementById('tagsContainer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
-        
-        if (!postContainer) return; // Garante que só rode na página certa
-        
         let currentFilter = { term: '', tag: '' };
         let visiblePostsCount = 6;
-
         const renderPosts = () => {
             const filteredPosts = postsData.filter(post => {
                 const searchTermMatch = post.title.toLowerCase().includes(currentFilter.term.toLowerCase());
                 const tagMatch = currentFilter.tag ? post.tags.includes(currentFilter.tag) : true;
                 return searchTermMatch && tagMatch;
             });
-
-            postContainer.innerHTML = ''; // Limpa os posts
+            postContainer.innerHTML = '';
             const postsToRender = filteredPosts.slice(0, visiblePostsCount);
-            
             if (postsToRender.length === 0) {
                 postContainer.innerHTML = '<p class="no-results">Nenhum post encontrado.</p>';
             } else {
@@ -104,56 +88,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('a');
                     card.href = `post.html?id=${post.id}`;
                     card.className = 'card';
-                    card.innerHTML = `
-                        <img src="${post.imageUrl}" alt="${post.title}" loading="lazy">
-                        <div class="card-content">
-                            <div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
-                            <h2>${post.title}</h2>
-                            <p>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
-                        </div>
-                    `;
+                    card.innerHTML = `<img src="${post.imageUrl}" alt="${post.title}" loading="lazy"><div class="card-content"><div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><h2>${post.title}</h2><p>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p></div>`;
                     postContainer.appendChild(card);
                 });
             }
-            
             loadMoreBtn.style.display = (visiblePostsCount >= filteredPosts.length) ? 'none' : 'block';
         };
-
         const renderTags = () => {
             const allTags = [...new Set(postsData.flatMap(p => p.tags))];
-            tagsContainer.innerHTML = `<span class="tag" data-tag="">Todos</span>` + 
-                                      allTags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
+            tagsContainer.innerHTML = `<span class="tag" data-tag="">Todos</span>` + allTags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
         };
-        
         searchInput.addEventListener('input', (e) => {
             currentFilter.term = e.target.value;
             visiblePostsCount = 6;
             renderPosts();
         });
-
         tagsContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('tag')) {
                 tagsContainer.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
                 e.target.classList.add('active');
-                
                 currentFilter.tag = e.target.dataset.tag;
                 visiblePostsCount = 6;
                 renderPosts();
             }
         });
-        
         loadMoreBtn.addEventListener('click', () => {
             visiblePostsCount += 6;
             renderPosts();
         });
-        
         renderTags();
         tagsContainer.querySelector('.tag').classList.add('active');
         renderPosts();
-        hidePreloader(); // **CORREÇÃO: Esconde o preloader APÓS renderizar os posts**
+        hidePreloader();
     };
     
-    // Lógica da PÁGINA DE POST (post.html)
     const initPostPage = () => {
         const articleContent = document.getElementById('article-content');
         if (!articleContent) return;
@@ -161,45 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
         const postId = parseInt(params.get('id'));
         const post = postsData.find(p => p.id === postId);
-
         if (post) {
             document.title = `${post.title} - Meu Blog Hardcore`;
-            articleContent.innerHTML = `
-                <article class="post-full">
-                    <header class="post-header">
-                        <img src="${post.imageUrl}" alt="${post.title}" class="post-image-full" loading="lazy">
-                        <h1 class="post-title-full">${post.title}</h1>
-                        <div class="post-meta">
-                            <span>Por ${post.author}</span> | 
-                            <span>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
-                        </div>
-                        <div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>
-                    </header>
-                    <section class="post-content-full">
-                        ${post.content}
-                    </section>
-                    <footer class="post-footer">
-                        <h3>Compartilhe este post:</h3>
-                        <div class="share-buttons">
-                            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' - ' + window.location.href)}" target="_blank" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}" target="_blank" class="share-btn twitter"><i class="fab fa-twitter"></i> Twitter</a>
-                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}" target="_blank" class="share-btn linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                        </div>
-                    </footer>
-                </article>
-            `;
+            articleContent.innerHTML = `<article class="post-full"><header class="post-header"><img src="${post.imageUrl}" alt="${post.title}" class="post-image-full" loading="lazy"><h1 class="post-title-full">${post.title}</h1><div class="post-meta"><span>Por ${post.author}</span> | <span>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</span></div><div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></header><section class="post-content-full">${post.content}</section><footer class="post-footer"><h3>Compartilhe este post:</h3><div class="share-buttons"><a href="https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' - ' + window.location.href)}" target="_blank" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}" target="_blank" class="share-btn twitter"><i class="fab fa-twitter"></i> Twitter</a><a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}" target="_blank" class="share-btn linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a></div></footer></article>`;
         } else {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
             articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está procurando não foi encontrado.</p>';
         }
-        
-        hidePreloader(); // **CORREÇÃO: Esconde o preloader APÓS renderizar o post**
-        setTimeout(updateGiscusTheme, 1500);
+        hidePreloader();
     };
     
-    // Lógica para PÁGINAS ESTÁTICAS (Sobre, Contato)
     const initStaticPage = () => {
-        hidePreloader(); // **CORREÇÃO: Apenas esconde o preloader**
+        hidePreloader();
     };
     
     const initContactPage = () => {
@@ -213,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contactForm.reset();
         });
         
-        initStaticPage(); // Chama a função que esconde o preloader
+        initStaticPage();
     };
 
     // --- INICIALIZAÇÃO GERAL ---
@@ -223,10 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     toggleThemeBtn.addEventListener('click', toggleTheme);
     window.addEventListener('scroll', handleScroll);
-    backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // Removemos o antigo listener de 'load'
-    // window.addEventListener('load', () => ... );
+    backTotopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
     // Roda o código específico da página atual
     if (document.getElementById('postContainer')) {
@@ -236,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (document.getElementById('contactForm')) {
         initContactPage();
     } else if (document.querySelector('.page-content')) {
-        // Para a página Sobre
         initStaticPage();
     }
 });
+
