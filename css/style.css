@@ -336,3 +336,54 @@ footer { text-align:center; padding: 3rem 1rem 2rem; font-size:0.9rem; color:var
     .container { padding: 1rem; margin-top: 60px; }
     #backToTopBtn { right: 20px; bottom: 90px; }
 }
+
+/* --- FORMULÁRIO DE CONTATO --- */
+.contact-form { max-width: 600px; margin: auto; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+.form-group input, .form-group textarea {
+    width: 100%; padding: 0.8rem;
+    background: var(--surface-dark); border: 1px solid #444;
+    border-radius: 8px; color: var(--text-dark); font-family: inherit; font-size: 1rem;
+    transition: border-color 0.3s;
+}
+body.light .form-group input, body.light .form-group textarea { border: 1px solid #ccc; }
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+.submit-btn {
+    width: 100%; padding: 1rem; background: var(--primary);
+    color: #111; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s;
+}
+.submit-btn:hover {
+    background-color: var(--secondary);
+}
+
+/* ESTILOS NOVOS PARA O BOTÃO DE ENVIO */
+.submit-btn .btn-spinner {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.3);
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+.submit-btn.submitting .btn-text {
+    visibility: hidden;
+}
+.submit-btn.submitting .btn-spinner {
+    display: block;
+}
+.submit-btn.submitting {
+    cursor: not-allowed;
+    background-color: var(--secondary);
+}
+
