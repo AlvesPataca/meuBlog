@@ -15,6 +15,7 @@
     --radius: 12px;
     --shadow-color: rgba(0, 0, 0, 0.4);
     --font-family: 'Inter', sans-serif;
+    color-scheme: light dark;
 }
 
 /* --- ESTILOS GERAIS E RESET --- */
@@ -35,10 +36,6 @@ body.light {
     --text-muted-dark: #555;
     --shadow-color: rgba(0, 0, 0, 0.1);
 }
-/* Impede o scroll quando o menu mobile está aberto */
-body.nav-open {
-    overflow: hidden;
-}
 img { max-width: 100%; display: block; }
 .container { padding: 2rem; max-width: 1200px; margin: 80px auto 0; }
 
@@ -52,9 +49,9 @@ img { max-width: 100%; display: block; }
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.5s ease;
 }
-.preloader.hidden { opacity: 0; visibility: hidden; }
+.preloader.hidden { opacity: 0; pointer-events: none; }
 .spinner {
     width: 50px;
     height: 50px;
@@ -89,7 +86,6 @@ nav.scrolled {
     font-size: 1.5rem;
     color: var(--primary);
     text-decoration: none;
-    z-index: 1001; /* Garante que o logo fique sobre o menu mobile */
 }
 .nav-links { display: flex; gap: 2rem; }
 .nav-links a {
@@ -112,44 +108,23 @@ nav.scrolled {
 }
 .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
 .nav-links a:hover, .nav-links a.active { color: var(--primary); }
-
-/* Botão Hambúrguer */
 .hamburger-btn {
-    display: none; /* Escondido em telas grandes */
-    width: 30px;
-    height: 24px;
+    display: none;
     background: transparent;
     border: none;
     cursor: pointer;
     z-index: 1001;
     padding: 0;
-    position: relative;
 }
 .hamburger-btn span {
     display: block;
-    width: 100%;
+    width: 25px;
     height: 3px;
     background-color: var(--text-dark);
-    border-radius: 3px;
+    margin: 5px 0;
     transition: all 0.3s ease-in-out;
-    position: absolute;
-    left: 0;
 }
-.hamburger-btn span:nth-child(1) { top: 0; }
-.hamburger-btn span:nth-child(2) { top: 10px; }
-.hamburger-btn span:nth-child(3) { top: 20px; }
-
-/* Animação do Hambúrguer para "X" */
-body.nav-open .hamburger-btn span:nth-child(1) {
-    transform: translateY(10px) rotate(45deg);
-}
-body.nav-open .hamburger-btn span:nth-child(2) {
-    opacity: 0;
-}
-body.nav-open .hamburger-btn span:nth-child(3) {
-    transform: translateY(-10px) rotate(-45deg);
-}
-
+body.light .hamburger-btn span { background-color: var(--text-light); }
 
 /* --- HEADER (PÁGINA INICIAL) --- */
 header#home {
@@ -165,7 +140,6 @@ body.light header#home img { border-color: var(--bg-light); }
 header#home img:hover { transform: scale(1.1); }
 header#home h1 { margin: 1rem 0 0.5rem; font-size: 2.5rem; color: #fff; text-shadow: 1px 1px 10px rgba(0,0,0,0.3); }
 header#home p { margin: 0; color: #eee; font-size: 1.2rem; }
-#particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 
 /* --- BUSCA E TAGS --- */
 .search-container {
@@ -290,30 +264,24 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
     width: 100%; padding: 1rem; background: var(--primary);
     color: #111; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer;
     position: relative;
-    transition: background-color 0.3s;
 }
-.submit-btn:disabled {
-    background-color: #999;
-    cursor: not-allowed;
+.submit-btn.submitting {
+    color: transparent;
 }
 .submit-btn .spinner {
     display: none;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border-width: 3px;
+    top: 50%; left: 50%;
+    margin-left: -12px; margin-top: -12px;
+    width: 24px; height: 24px;
+    border: 3px solid rgba(0, 0, 0, 0.3);
     border-top-color: #111;
-}
-.submit-btn.submitting .button-text {
-    visibility: hidden;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 .submit-btn.submitting .spinner {
     display: block;
 }
-
 
 /* --- PÁGINA DE POST INDIVIDUAL --- */
 .post-full { max-width: 800px; margin: auto; }
@@ -325,13 +293,18 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
 .post-content-full h3 { color: var(--secondary); margin-top: 2rem; }
 .post-content-full blockquote { border-left: 4px solid var(--primary); padding-left: 1rem; margin-left: 0; font-style: italic; color: var(--text-muted-dark); }
 .post-footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--surface-dark); }
-.share-buttons { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+.share-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 .share-btn { padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
 .share-btn.whatsapp { background: #25D366; }
 .share-btn.twitter { background: #1DA1F2; }
 .share-btn.linkedin { background: #0A66C2; }
-.post-comments { margin-top: 3rem; }
-.comments-title { text-align: center; font-size: 1.8rem; color: var(--primary); margin-bottom: 1.5rem; }
+.post-comments {
+    margin-top: 3rem;
+}
+#giscus-container {
+    margin-top: 1.5rem;
+    min-height: 200px; /* Garante que o contentor tenha sempre espaço para o Giscus carregar */
+}
 
 /* --- BOTÕES FIXOS E UTILITÁRIOS --- */
 #toggleTheme, #backToTopBtn {
@@ -344,14 +317,10 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
     cursor: pointer; z-index: 999;
     font-size: 1.5rem; color: #111;
     display: flex; align-items: center; justify-content: center;
-    transition: transform 0.3s, opacity 0.3s, background-color 0.3s;
-}
-#toggleTheme:hover, #backToTopBtn:hover {
-    transform: scale(1.1);
-    background-color: var(--secondary);
+    transition: transform 0.3s, opacity 0.3s;
 }
 #toggleTheme { right: 20px; }
-#backTotopBtn {
+#backToTopBtn {
     right: 90px;
     opacity: 0;
     pointer-events: none;
@@ -373,59 +342,50 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
     transition: bottom 0.5s ease-in-out;
     z-index: 2000;
 }
+.toast.error { background: #ff5252; color: #fff; }
 .toast.visible { bottom: 20px; }
-.toast.error { background-color: #e53935; color: #fff; }
 
 /* --- FOOTER --- */
 footer { text-align:center; padding: 3rem 1rem 2rem; font-size:0.9rem; color:var(--text-muted-dark); border-top: 1px solid var(--surface-dark); }
-body.light footer { border-top-color: #eee; }
 .socials { margin-top: 1rem; display:flex; justify-content:center; gap:1.5rem; }
 .socials a { color: var(--secondary); font-size:1.5rem; transition: transform 0.3s, color 0.3s; }
 .socials a:hover { transform: scale(1.2); color: var(--primary); }
 
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
-    .container { padding: 1.5rem; margin-top: 70px; }
-    
-    /* Mostra o botão Hambúrguer */
-    .hamburger-btn {
-        display: block;
-    }
+    .container { padding: 1rem; margin-top: 70px; }
+    header#home h1 { font-size: 2rem; }
+    .post-title-full { font-size: 2.2rem; }
+    #backToTopBtn { right: 20px; bottom: 90px; }
 
-    /* Esconde o menu de desktop e o transforma em menu mobile */
+    .hamburger-btn { display: block; }
     .nav-links {
         position: fixed;
         top: 0;
         right: 0;
-        width: 80%;
+        width: 100%;
         height: 100vh;
         background: var(--surface-dark);
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 3rem;
         transform: translateX(100%);
-        transition: transform 0.4s ease-in-out;
-        box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease-in-out;
+        gap: 3rem;
     }
-    body.light .nav-links {
-        background: var(--surface-light);
-    }
-    /* Estilo do menu mobile quando aberto */
     body.nav-open .nav-links {
         transform: translateX(0);
     }
-    .nav-links a {
-        font-size: 1.5rem;
+    body.nav-open {
+        overflow: hidden;
     }
-
-    header#home h1 { font-size: 2rem; }
-    .post-title-full { font-size: 2.2rem; }
-    #backToTopBtn { right: 20px; bottom: 90px; }
-}
-
-@media (max-width: 480px) {
-    .container { padding: 1rem; }
-    .nav-links { width: 100%; }
-    .share-buttons { flex-direction: column; align-items: center; }
+    body.nav-open .hamburger-btn span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    body.nav-open .hamburger-btn span:nth-child(2) {
+        opacity: 0;
+    }
+    body.nav-open .hamburger-btn span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
 }
