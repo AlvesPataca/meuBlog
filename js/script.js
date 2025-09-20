@@ -17,10 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Função para enviar mensagem de tema para o iframe do Giscus
+    const updateGiscusTheme = () => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        const theme = body.classList.contains('light') ? 'light' : 'dark';
+        iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
+    };
+    
     // Alternar tema e salvar preferência
     const toggleTheme = () => {
         body.classList.toggle('light');
         localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+        updateGiscusTheme(); // Comanda a mudança no Giscus
     };
 
     // Aplicar tema salvo
@@ -66,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const initHomePage = () => {
         const postContainer = document.getElementById('postContainer');
         if (!postContainer) return;
-
         const searchInput = document.getElementById('searchInput');
         const tagsContainer = document.getElementById('tagsContainer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
@@ -124,17 +132,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const initPostPage = () => {
         const articleContent = document.getElementById('article-content');
         if (!articleContent) return;
-
+        
         const params = new URLSearchParams(window.location.search);
         const postId = parseInt(params.get('id'));
         const post = postsData.find(p => p.id === postId);
+        
         if (post) {
             document.title = `${post.title} - Meu Blog Hardcore`;
             articleContent.innerHTML = `<article class="post-full"><header class="post-header"><img src="${post.imageUrl}" alt="${post.title}" class="post-image-full" loading="lazy"><h1 class="post-title-full">${post.title}</h1><div class="post-meta"><span>Por ${post.author}</span> | <span>${new Date(post.publishDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</span></div><div class="tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></header><section class="post-content-full">${post.content}</section><footer class="post-footer"><h3>Compartilhe este post:</h3><div class="share-buttons"><a href="https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' - ' + window.location.href)}" target="_blank" class="share-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}" target="_blank" class="share-btn twitter"><i class="fab fa-twitter"></i> Twitter</a><a href="https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}" target="_blank" class="share-btn linkedin"><i class="fab fa-linkedin-in"></i> LinkedIn</a></div></footer></article>`;
         } else {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
-            articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está procurando não foi encontrado.</p>';
+            articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está a procurar não foi encontrado.</p>';
         }
+        
+        // Sincroniza o tema do Giscus assim que ele carregar
+        const giscusCheck = setInterval(() => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                clearInterval(giscusCheck); // Para de verificar
+                updateGiscusTheme(); // Envia o tema correto
+            }
+        }, 500);
+
         hidePreloader();
     };
     
@@ -144,16 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const initContactPage = () => {
         const contactForm = document.getElementById('contactForm');
-        // CORRIGIDO AQUI: Ponto e vírgula em vez de ponto final.
         if (!contactForm) return;
-        
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value;
-            showToast(`Obrigado, ${name}! Sua mensagem foi enviada.`);
+            showToast(`Obrigado, ${name}! A sua mensagem foi enviada.`);
             contactForm.reset();
         });
-        
         initStaticPage();
     };
 
