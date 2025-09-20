@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.querySelector('.preloader');
     const toast = document.getElementById('toast');
 
-    // --- FUNÇÕES GLOBAIS (para todas as páginas) ---
+    // --- FUNÇÕES GLOBAIS ---
 
     const hidePreloader = () => {
         if (preloader) {
@@ -17,30 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Função para enviar mensagem de tema para o iframe do Giscus
-    const updateGiscusTheme = () => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (!iframe) return;
-        const theme = body.classList.contains('light') ? 'light' : 'dark';
-        iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
-    };
-    
-    // Alternar tema e salvar preferência
-    const toggleTheme = () => {
-        body.classList.toggle('light');
-        localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
-        updateGiscusTheme(); // Comanda a mudança no Giscus
-    };
-
-    // Aplicar tema salvo
-    const applySavedTheme = () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            body.classList.add('light');
-        }
-    };
-
-    // Header que encolhe e botão "Voltar ao Topo"
     const handleScroll = () => {
         if (window.scrollY > 50) {
             nav.classList.add('scrolled');
@@ -51,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Marcar link de navegação ativo
     const highlightActiveLink = () => {
         const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         document.querySelectorAll('.nav-links a').forEach(link => {
@@ -60,8 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     };
-    
-    // Função de Notificação Toast
+
     const showToast = (message, type = 'success') => {
         toast.textContent = message;
         toast.className = `toast visible ${type}`;
@@ -70,24 +44,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
 
+    const updateGiscusTheme = () => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+            const theme = body.classList.contains('light') ? 'light' : 'dark';
+            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
+        }
+    };
+
+    const loadGiscus = () => {
+        const container = document.getElementById('giscus-container');
+        if (!container) return;
+
+        container.innerHTML = '';
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+
+        script.setAttribute('data-repo', 'AlvesPataca/meuBlog');
+        script.setAttribute('data-repo-id', 'R_kgDOPzTnBQ');
+        script.setAttribute('data-category', 'General');
+        script.setAttribute('data-category-id', 'DIC_kwDOPzTnBc4CvqPl');
+        script.setAttribute('data-mapping', 'title');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-lang', 'pt');
+        
+        const currentTheme = body.classList.contains('light') ? 'light' : 'dark';
+        script.setAttribute('data-theme', currentTheme);
+
+        container.appendChild(script);
+    };
+    
+    const toggleTheme = () => {
+        body.classList.toggle('light');
+        localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
+        updateGiscusTheme();
+    };
+
+    const applySavedTheme = () => {
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light');
+        }
+    };
+
     // --- LÓGICA ESPECÍFICA DE CADA PÁGINA ---
 
     const initHomePage = () => {
         const postContainer = document.getElementById('postContainer');
         if (!postContainer) return;
+
         const searchInput = document.getElementById('searchInput');
         const tagsContainer = document.getElementById('tagsContainer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        
         let currentFilter = { term: '', tag: '' };
         let visiblePostsCount = 6;
+
         const renderPosts = () => {
             const filteredPosts = postsData.filter(post => {
                 const searchTermMatch = post.title.toLowerCase().includes(currentFilter.term.toLowerCase());
                 const tagMatch = currentFilter.tag ? post.tags.includes(currentFilter.tag) : true;
                 return searchTermMatch && tagMatch;
             });
+
             postContainer.innerHTML = '';
             const postsToRender = filteredPosts.slice(0, visiblePostsCount);
+            
             if (postsToRender.length === 0) {
                 postContainer.innerHTML = '<p class="no-results">Nenhum post encontrado.</p>';
             } else {
@@ -99,32 +124,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     postContainer.appendChild(card);
                 });
             }
+            
             loadMoreBtn.style.display = (visiblePostsCount >= filteredPosts.length) ? 'none' : 'block';
         };
+
         const renderTags = () => {
             const allTags = [...new Set(postsData.flatMap(p => p.tags))];
-            tagsContainer.innerHTML = `<span class="tag" data-tag="">Todos</span>` + allTags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
+            tagsContainer.innerHTML = `<span class="tag active" data-tag="">Todos</span>` + allTags.map(tag => `<span class="tag" data-tag="${tag}">${tag}</span>`).join('');
         };
+        
         searchInput.addEventListener('input', (e) => {
             currentFilter.term = e.target.value;
             visiblePostsCount = 6;
             renderPosts();
         });
+
         tagsContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('tag')) {
                 tagsContainer.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
                 e.target.classList.add('active');
+                
                 currentFilter.tag = e.target.dataset.tag;
                 visiblePostsCount = 6;
                 renderPosts();
             }
         });
+        
         loadMoreBtn.addEventListener('click', () => {
             visiblePostsCount += 6;
             renderPosts();
         });
+        
         renderTags();
-        tagsContainer.querySelector('.tag').classList.add('active');
         renderPosts();
         hidePreloader();
     };
@@ -144,36 +175,61 @@ document.addEventListener('DOMContentLoaded', () => {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
             articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está a procurar não foi encontrado.</p>';
         }
-        
-        // Sincroniza o tema do Giscus assim que ele carregar
-        const giscusCheck = setInterval(() => {
-            const iframe = document.querySelector('iframe.giscus-frame');
-            if (iframe) {
-                clearInterval(giscusCheck); // Para de verificar
-                updateGiscusTheme(); // Envia o tema correto
-            }
-        }, 500);
 
+        loadGiscus();
         hidePreloader();
     };
     
     const initStaticPage = () => {
         hidePreloader();
     };
-    
+
     const initContactPage = () => {
         const contactForm = document.getElementById('contactForm');
         if (!contactForm) return;
-        contactForm.addEventListener('submit', (e) => {
+
+        const submitBtn = document.getElementById('submitBtn');
+        
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('name').value;
-            showToast(`Obrigado, ${name}! A sua mensagem foi enviada.`);
-            contactForm.reset();
+            submitBtn.classList.add('submitting');
+            submitBtn.disabled = true;
+
+            const formData = new FormData(contactForm);
+            const action = contactForm.getAttribute('action');
+
+            try {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showToast('Obrigado! Sua mensagem foi enviada com sucesso.', 'success');
+                    contactForm.reset();
+                } else {
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        const errorMsg = data["errors"].map(error => error["message"]).join(", ");
+                        showToast(`Erro: ${errorMsg}`, 'error');
+                    } else {
+                        showToast('Ops! Ocorreu um erro ao enviar a mensagem.', 'error');
+                    }
+                }
+            } catch (error) {
+                showToast('Ops! Ocorreu um erro de rede. Tente novamente.', 'error');
+            } finally {
+                submitBtn.classList.remove('submitting');
+                submitBtn.disabled = false;
+            }
         });
+
         initStaticPage();
     };
 
     // --- INICIALIZAÇÃO GERAL ---
+    
     applySavedTheme();
     highlightActiveLink();
     handleScroll();
@@ -189,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initPostPage();
     } else if (document.getElementById('contactForm')) {
         initContactPage();
-    } else if (document.querySelector('.page-content')) {
-        initStaticPage();
+    } else {
+        initStaticPage(); // Para páginas simples como "Sobre"
     }
 });
