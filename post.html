@@ -22,8 +22,29 @@
         </div>
     </nav>
     
-    <main id="post-container" class="container">
-        <!-- O conteúdo do post (artigo) será carregado aqui pelo JavaScript -->
+    <main class="container">
+        <!-- O JavaScript irá carregar o artigo AQUI -->
+        <div id="article-content"></div>
+
+        <!-- A seção de comentários agora está fixa aqui -->
+        <section id="comments" class="post-comments">
+            <h3 class="comments-title">Comentários</h3>
+            <script src="https://giscus.app/client.js"
+                    data-repo="AlvesPataca/meuBlog"
+                    data-repo-id="R_kgDOPzTnBQ"
+                    data-category="General"
+                    data-category-id="DIC_kwDOPzTnBc4CvqPl"
+                    data-mapping="title"
+                    data-strict="0"
+                    data-reactions-enabled="1"
+                    data-emit-metadata="0"
+                    data-input-position="bottom"
+                    data-theme="dark"
+                    data-lang="pt"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+        </section>
     </main>
 
     <footer>
