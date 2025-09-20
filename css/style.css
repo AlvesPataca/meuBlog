@@ -37,6 +37,8 @@ body.light {
 }
 img { max-width: 100%; display: block; }
 .container { padding: 2rem; max-width: 1200px; margin: 80px auto 0; }
+.container.page-content { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+@keyframes fadeIn { to { opacity: 1; } }
 
 /* --- PRELOADER --- */
 .preloader {
@@ -110,7 +112,6 @@ nav.scrolled {
 
 /* --- HEADER (PÁGINA INICIAL) --- */
 header#home {
-    /* (Estilos do header original podem ser mantidos aqui) */
     text-align: center; padding: 8rem 1rem 4rem;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     background-size: 200% 200%;
@@ -222,7 +223,6 @@ body.light .tag.active { color: #fff; }
 .load-more-btn:hover { transform: scale(1.05); }
 
 /* --- PÁGINAS DE CONTEÚDO (SOBRE, CONTATO) --- */
-.page-content { padding-top: 2rem; }
 .page-title { font-size: 2.5rem; color: var(--primary); text-align: center; margin-bottom: 1rem; }
 .page-subtitle { font-size: 1.8rem; text-align: center; margin-top: 3rem; margin-bottom: 1.5rem; }
 .page-description { text-align: center; font-size: 1.1rem; color: var(--text-muted-dark); max-width: 600px; margin: 0 auto 2rem auto; }
@@ -249,6 +249,10 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
 }
 
 /* --- PÁGINA DE POST INDIVIDUAL --- */
+#article-content {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+}
 .post-full { max-width: 800px; margin: auto; }
 .post-header { text-align: center; margin-bottom: 2rem; }
 .post-image-full { width: 100%; border-radius: var(--radius); margin-bottom: 1.5rem; }
@@ -258,11 +262,25 @@ body.light .form-group input, body.light .form-group textarea { border: 1px soli
 .post-content-full h3 { color: var(--secondary); margin-top: 2rem; }
 .post-content-full blockquote { border-left: 4px solid var(--primary); padding-left: 1rem; margin-left: 0; font-style: italic; color: var(--text-muted-dark); }
 .post-footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--surface-dark); }
-.share-buttons { display: flex; gap: 1rem; justify-content: center; }
+.share-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 .share-btn { padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
 .share-btn.whatsapp { background: #25D366; }
 .share-btn.twitter { background: #1DA1F2; }
 .share-btn.linkedin { background: #0A66C2; }
+
+/* --- SEÇÃO DE COMENTÁRIOS --- */
+.post-comments {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #444;
+}
+body.light .post-comments { border-top-color: #ddd; }
+.comments-title {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: var(--primary);
+}
 
 /* --- BOTÕES FIXOS E UTILITÁRIOS --- */
 #toggleTheme, #backToTopBtn {
@@ -310,7 +328,7 @@ footer { text-align:center; padding: 3rem 1rem 2rem; font-size:0.9rem; color:var
 
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
-    .nav-links { display: none; } /* Simplificação para mobile, ideal seria um menu hambúrguer */
+    .nav-links { display: none; }
     header#home h1 { font-size: 2rem; }
     .post-title-full { font-size: 2.2rem; }
     .container { padding: 1rem; margin-top: 60px; }
