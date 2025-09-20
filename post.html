@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carregando post... - Meu Blog Hardcore</title>
+    <title>A carregar post... - Meu Blog Hardcore</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -12,43 +12,29 @@
         <div class="spinner"></div>
     </div>
 
-<nav id="mainNav">
-    <a href="index.html" class="nav-logo">MeuBlog.</a>
-    <div class="nav-links">
-        <a href="index.html">Início</a>
-        <a href="sobre.html">Sobre</a>
-        <a href="contato.html">Contato</a>
-    </div>
-    <button id="hamburgerBtn" class="hamburger-btn" aria-label="Abrir menu de navegação">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-</nav>
+    <nav id="mainNav">
+        <a href="index.html" class="nav-logo">MeuBlog.</a>
+        <div class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="contato.html">Contato</a>
+        </div>
+        <button id="hamburgerBtn" class="hamburger-btn" aria-label="Abrir menu de navegação">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
     
     <main class="container">
-        <!-- O conteúdo do post será injetado aqui -->
+        <!-- O conteúdo do post será carregado aqui pelo JavaScript -->
         <div id="article-content"></div>
 
-        <!-- A seção de comentários agora fica permanentemente no HTML -->
+        <!-- Secção de comentários com um contentor vazio para o Giscus -->
         <section id="comments" class="post-comments">
-    <h3 class="comments-title">Comentários</h3>
-    <!-- O script do Giscus vai aqui, carregado diretamente -->
-    <script src="https://giscus.app/client.js"
-            data-repo="AlvesPataca/meuBlog"
-            data-repo-id="R_kgDOPzTnBQ"
-            data-category="General"
-            data-category-id="DIC_kwDOPzTnBc4CvqPl"
-            data-mapping="title"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="bottom"
-            data-lang="pt"
-            data-theme="light" <!-- Pode começar com light ou dark, o JS corrige -->
-            crossorigin="anonymous"
-            async>
-    </script>
-</section>
+            <h3 class="comments-title">Comentários</h3>
+            <div id="giscus-container"></div>
+        </section>
     </main>
 
     <footer>
@@ -58,11 +44,7 @@
     <button id="toggleTheme" aria-label="Alternar tema">🌗</button>
     <button id="backToTopBtn" aria-label="Voltar ao topo"><i class="fas fa-arrow-up"></i></button>
 
-    <div id="toast" class="toast"></div>
-
     <script src="js/data.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
-
-
