@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- O título será definido via JS -->
     <title>Carregando post... - Meu Blog Hardcore</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -23,10 +22,10 @@
     </nav>
     
     <main class="container">
-        <!-- O JavaScript irá carregar o artigo AQUI -->
+        <!-- O conteúdo do post será injetado aqui -->
         <div id="article-content"></div>
 
-        <!-- A seção de comentários agora está fixa aqui -->
+        <!-- A seção de comentários agora fica permanentemente no HTML -->
         <section id="comments" class="post-comments">
             <h3 class="comments-title">Comentários</h3>
             <script src="https://giscus.app/client.js"
@@ -39,7 +38,7 @@
                     data-reactions-enabled="1"
                     data-emit-metadata="0"
                     data-input-position="bottom"
-                    data-theme="preferred_color_scheme" 
+                    data-theme="dark"
                     data-lang="pt"
                     crossorigin="anonymous"
                     async>
