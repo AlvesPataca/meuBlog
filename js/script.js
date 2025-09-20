@@ -13,14 +13,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES GLOBAIS ---
 
-    // Envia o tema atual para o iframe do Giscus
-    const updateGiscusTheme = () => {
-        const iframe = document.querySelector('iframe.giscus-frame');
-        if (iframe) {
-            // Usando temas Giscus padrão
-            const theme = body.classList.contains('light') ? 'light' : 'github-dark'; 
-            iframe.contentWindow.postMessage({ giscus: { setTheme: theme } }, 'https://giscus.app');
-        }
+    // Carrega o Giscus com o tema correto
+    const loadGiscus = () => {
+        const container = document.getElementById('giscus-container');
+        if (!container) return; // Só executa na página de post
+
+        container.innerHTML = ''; // Limpa o contentor para recarregar
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+
+        // Atributos para configurar o Giscus
+        script.setAttribute('data-repo', 'AlvesPataca/meuBlog');
+        script.setAttribute('data-repo-id', 'R_kgDOPzTnBQ');
+        script.setAttribute('data-category', 'General');
+        script.setAttribute('data-category-id', 'DIC_kwDOPzTnBc4CvqPl');
+        script.setAttribute('data-mapping', 'title');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-lang', 'pt');
+        
+        // Define o tema com base na classe do body
+        const currentTheme = body.classList.contains('light') ? 'light' : 'dark';
+        script.setAttribute('data-theme', currentTheme);
+
+        container.appendChild(script);
     };
 
     // Lógica do Menu Hambúrguer
@@ -75,11 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     };
     
-    // Alterna o tema e atualiza o Giscus
+    // Alterna o tema e recarrega o Giscus
     const toggleTheme = () => {
         body.classList.toggle('light');
         localStorage.setItem('theme', body.classList.contains('light') ? 'light' : 'dark');
-        updateGiscusTheme(); // Apenas envia a mensagem para o Giscus
+        loadGiscus(); // Recarrega o Giscus com o novo tema
     };
 
     // Aplica o tema salvo no carregamento da página
@@ -90,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- LÓGICA ESPECÍFICA DE CADA PÁGINA ---
-
     const initHomePage = () => {
         const postContainer = document.getElementById('postContainer');
         if (!postContainer) return;
@@ -175,18 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
             articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que procura não foi encontrado.</p>';
         }
 
-        // Sincroniza o tema do Giscus no carregamento inicial da página
-        const giscusSync = setInterval(() => {
-            const iframe = document.querySelector('iframe.giscus-frame');
-            if (iframe) {
-                updateGiscusTheme();
-                clearInterval(giscusSync); // Para de verificar uma vez que encontrou
-            }
-        }, 500); // Verifica a cada meio segundo
-
+        loadGiscus(); // Carrega o Giscus na primeira vez
         hidePreloader();
     };
     
+    // Para páginas estáticas como "Sobre"
     const initStaticPage = () => {
         hidePreloader();
     };
