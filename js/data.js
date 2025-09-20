@@ -31,7 +31,6 @@ const postsData = [
             <p>Construído sobre Promises, <code>async/await</code> nos permite escrever código assíncrono que se parece e se comporta como código síncrono, tornando-o muito mais intuitivo. Vamos ver exemplos práticos de como refatorar código de Promises para usar essa sintaxe elegante.</p>
         `
     },
-    // Adicione quantos posts quiser aqui, seguindo o mesmo modelo
     {
         id: 3,
         title: "O Guia Definitivo de Acessibilidade Web (WCAG)",
@@ -49,8 +48,7 @@ const postsData = [
         tags: ["Node.js", "Backend", "JavaScript"],
         imageUrl: `https://picsum.photos/800/400?random=4`,
         content: `<p>Node.js revolucionou o desenvolvimento backend ao permitir que desenvolvedores usassem JavaScript no lado do servidor. Combinado com o framework Express, criar APIs RESTful se torna uma tarefa rápida e organizada.</p><p>Vamos criar um servidor do zero, definir rotas, lidar com requisições HTTP e conectar a um banco de dados simulado. Ao final, você terá uma base sólida para construir suas próprias aplicações backend.</p>`
-    },
-    // ... adicione mais 10 a 20 posts para testar a busca e o "Carregar Mais"
+    }
 ];
 
 // Gerar mais posts para o exemplo
