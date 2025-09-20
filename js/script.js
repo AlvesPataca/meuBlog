@@ -11,10 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNÇÕES GLOBAIS (para todas as páginas) ---
 
-    // Lógica do Preloader
-    window.addEventListener('load', () => {
-        preloader.classList.add('hidden');
-    });
+    // Lógica do Preloader (MODIFICADA)
+    // Agora o preloader é escondido manualmente após o conteúdo ser renderizado
+    const hidePreloader = () => {
+        if (preloader) {
+            preloader.classList.add('hidden');
+        }
+    };
     
     // Função para comunicar o tema ao Giscus
     const updateGiscusTheme = () => {
@@ -38,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedTheme === 'light') {
             body.classList.add('light');
         }
-        // O tema do Giscus será definido no HTML e atualizado depois via JS
     };
 
     // Header que encolhe e botão "Voltar ao Topo"
@@ -79,6 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('searchInput');
         const tagsContainer = document.getElementById('tagsContainer');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        
+        if (!postContainer) return; // Garante que só rode na página certa
         
         let currentFilter = { term: '', tag: '' };
         let visiblePostsCount = 6;
@@ -146,11 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTags();
         tagsContainer.querySelector('.tag').classList.add('active');
         renderPosts();
+        hidePreloader(); // **CORREÇÃO: Esconde o preloader APÓS renderizar os posts**
     };
     
     // Lógica da PÁGINA DE POST (post.html)
     const initPostPage = () => {
-        const articleContent = document.getElementById('article-content'); // **LINHA ATUALIZADA**
+        const articleContent = document.getElementById('article-content');
         if (!articleContent) return;
 
         const params = new URLSearchParams(window.location.search);
@@ -187,12 +192,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.title = "Post Não Encontrado - Meu Blog Hardcore";
             articleContent.innerHTML = '<h1 class="page-title">Erro 404</h1><p class="page-description">O post que você está procurando não foi encontrado.</p>';
         }
-
-        // Garante que o Giscus receba o tema correto após carregar
+        
+        hidePreloader(); // **CORREÇÃO: Esconde o preloader APÓS renderizar o post**
         setTimeout(updateGiscusTheme, 1500);
     };
     
-    // Lógica da PÁGINA DE CONTATO (contato.html)
+    // Lógica para PÁGINAS ESTÁTICAS (Sobre, Contato)
+    const initStaticPage = () => {
+        hidePreloader(); // **CORREÇÃO: Apenas esconde o preloader**
+    };
+    
     const initContactPage = () => {
         const contactForm = document.getElementById('contactForm');
         if (!contactForm) return;
@@ -203,6 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(`Obrigado, ${name}! Sua mensagem foi enviada.`);
             contactForm.reset();
         });
+        
+        initStaticPage(); // Chama a função que esconde o preloader
     };
 
     // --- INICIALIZAÇÃO GERAL ---
@@ -214,6 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', handleScroll);
     backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+    // Removemos o antigo listener de 'load'
+    // window.addEventListener('load', () => ... );
+
     // Roda o código específico da página atual
     if (document.getElementById('postContainer')) {
         initHomePage();
@@ -221,5 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initPostPage();
     } else if (document.getElementById('contactForm')) {
         initContactPage();
+    } else if (document.querySelector('.page-content')) {
+        // Para a página Sobre
+        initStaticPage();
     }
 });
