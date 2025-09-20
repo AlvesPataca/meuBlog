@@ -32,11 +32,23 @@
 
         <!-- A seção de comentários agora fica permanentemente no HTML -->
         <section id="comments" class="post-comments">
-            <h3 class="comments-title">Comentários</h3>
-            <!-- O SCRIPT DO GISCUS FOI REMOVIDO DAQUI -->
-            <!-- E SUBSTITUÍDO POR ESTE DIV VAZIO -->
-            <div id="giscus-container"></div>
-        </section>
+    <h3 class="comments-title">Comentários</h3>
+    <!-- O script do Giscus vai aqui, carregado diretamente -->
+    <script src="https://giscus.app/client.js"
+            data-repo="AlvesPataca/meuBlog"
+            data-repo-id="R_kgDOPzTnBQ"
+            data-category="General"
+            data-category-id="DIC_kwDOPzTnBc4CvqPl"
+            data-mapping="title"
+            data-reactions-enabled="1"
+            data-emit-metadata="0"
+            data-input-position="bottom"
+            data-lang="pt"
+            data-theme="light" <!-- Pode começar com light ou dark, o JS corrige -->
+            crossorigin="anonymous"
+            async>
+    </script>
+</section>
     </main>
 
     <footer>
@@ -52,4 +64,5 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+
 
