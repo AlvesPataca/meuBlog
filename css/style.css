@@ -131,7 +131,7 @@ header#home {
     text-align: center;
     padding: 15.625rem 0;
     background: linear-gradient(-45deg, #240046, #5a189a, #9d4edd, #c724b1);
-    background-size: 400% 400%;
+    background-size: 300% 300%;
     animation: gradient 15s ease infinite;
     position: relative; overflow: hidden;
 }
@@ -390,4 +390,5 @@ footer { text-align:center; padding: 3rem 1rem 2rem; font-size:0.9rem; color:var
         transform: translateY(-8px) rotate(-45deg);
     }
 }
+
 
