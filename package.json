@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "This is a simple, modern, and responsive blog template built with HTML, CSS, and vanilla JavaScript. It's designed to be a clean and straightforward platform for sharing ideas, projects, and thoughts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --testEnvironment=jsdom"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlvesPataca/meuBlog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AlvesPataca/meuBlog/issues"
+  },
+  "homepage": "https://github.com/AlvesPataca/meuBlog#readme",
+  "devDependencies": {
+    "jest": "^30.1.3",
+    "jest-environment-jsdom": "^30.1.2"
+  }
+}
