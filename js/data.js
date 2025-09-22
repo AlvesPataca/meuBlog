@@ -1,5 +1,19 @@
-// Este arquivo simula um banco de dados ou uma API, guardando os dados dos posts.
+/**
+ * @file This file contains the sample data for the blog posts.
+ * In a real-world application, this data would likely come from a database or a CMS.
+ */
 
+/**
+ * An array of post objects used to populate the blog.
+ * @type {Array<Object>}
+ * @property {number} id - The unique identifier for the post.
+ * @property {string} title - The title of the post.
+ * @property {string} author - The author of the post.
+ * @property {string} publishDate - The publication date of the post in 'YYYY-MM-DD' format.
+ * @property {Array<string>} tags - An array of tags associated with the post.
+ * @property {string} imageUrl - The URL for the post's main image.
+ * @property {string} content - The HTML content of the post.
+ */
 const postsData = [
     {
         id: 1,
@@ -51,7 +65,7 @@ const postsData = [
     }
 ];
 
-// Gerar mais posts para o exemplo
+// Generates more posts for demonstration purposes, pushing them into the postsData array.
 for (let i = 5; i <= 20; i++) {
     postsData.push({
         id: i,
