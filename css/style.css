@@ -6,11 +6,11 @@
     --bg-light: #f5f5f5;
     --surface-dark: #1e1e1e;
     --surface-light: #ffffff;
-    --primary: #bb86fc;
-    --secondary: #03dac6;
-    --text-dark: #e0e0e0;
+    --primary: #9D79BC;
+    --secondary: #B39CD0;
+    --text-dark: #F5F5F5;
     --text-light: #111;
-    --text-muted-dark: #999;
+    --text-muted-dark: #A9A9A9;
     --text-muted-light: #555;
     --radius: 12px;
     --shadow-color: rgba(0, 0, 0, 0.4);
@@ -130,7 +130,7 @@ body.light .hamburger-btn span { background-color: var(--text-light); }
 header#home {
     text-align: center;
     padding: 10rem 0;
-    background: linear-gradient(-45deg, #240046, #5a189a, #9d4edd, #c724b1);
+    background: linear-gradient(-45deg, #121212, #4F3A65, #9D79BC, #B39CD0);
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
     position: relative; overflow: hidden;
